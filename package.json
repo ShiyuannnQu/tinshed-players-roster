@@ -1,0 +1,27 @@
+{
+  "name": "tinshed-crew-roster",
+  "version": "1.0.0",
+  "description": "Show scheduling and volunteer crew rostering system for The Tinshed Players Inc., a community theatre company in Wynnum, Brisbane.",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "keywords": [
+    "rostering",
+    "volunteer",
+    "theatre",
+    "configuration-management",
+    "procurement"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^18.0.3",
+    "express": "^4.21.2"
+  }
+}
