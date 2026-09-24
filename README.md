@@ -42,7 +42,7 @@ hours reporting, equipment inventory, email/SMS and shift swapping.
 ## Run from a clean checkout
 
 ```bash
-git clone https://github.com/ShiyuannnQu/tinshed-players-roster
+git clone https://github.com/CyanLimeNing/tinshed-players-roster
 cd tinshed-players-roster
 npm install        # installs express and dotenv, locked by package-lock.json
 cp .env.example .env   # optional: defaults work without a .env file
