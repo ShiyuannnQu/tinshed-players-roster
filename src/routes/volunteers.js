@@ -81,7 +81,69 @@ function volunteersRouter(db) {
     res.json(toApi(row));
   });
 
+  // Record a date range the volunteer cannot be rostered (ISO dates, e.g.
+  // Kylie Toomey's wedding weekend). Starts must not be after ends.
+  router.post('/:id/unavailability', (req, res) => {
+    const volunteer = db.prepare('SELECT * FROM volunteers WHERE id = ?').get(req.params.id);
+    if (!volunteer) return res.status(404).json({ error: 'Volunteer not found.' });
+    const { startsOn, endsOn, reason } = req.body || {};
+    if (!isIsoDate(startsOn) || !isIsoDate(endsOn)) {
+      return res
+        .status(400)
+        .json({ error: 'Unavailability needs startsOn and endsOn as ISO dates (YYYY-MM-DD).' });
+    }
+    if (startsOn > endsOn) {
+      return res.status(400).json({ error: 'startsOn must not be after endsOn.' });
+    }
+    const result = db
+      .prepare(
+        `INSERT INTO volunteer_unavailability (volunteer_id, starts_on, ends_on, reason)
+         VALUES (?, ?, ?, ?)`
+      )
+      .run(volunteer.id, startsOn, endsOn, reason ? String(reason).trim() : null);
+    const row = db
+      .prepare('SELECT * FROM volunteer_unavailability WHERE id = ?')
+      .get(result.lastInsertRowid);
+    res.status(201).json(toUnavailabilityApi(row));
+  });
+
+  // List a volunteer's recorded unavailability, soonest first.
+  router.get('/:id/unavailability', (req, res) => {
+    const volunteer = db.prepare('SELECT * FROM volunteers WHERE id = ?').get(req.params.id);
+    if (!volunteer) return res.status(404).json({ error: 'Volunteer not found.' });
+    const rows = db
+      .prepare(
+        `SELECT * FROM volunteer_unavailability WHERE volunteer_id = ? ORDER BY starts_on, ends_on`
+      )
+      .all(volunteer.id);
+    res.json(rows.map(toUnavailabilityApi));
+  });
+
+  // Remove a recorded range (the volunteer can be rostered again).
+  router.delete('/:id/unavailability/:uid', (req, res) => {
+    const row = db
+      .prepare('SELECT * FROM volunteer_unavailability WHERE id = ? AND volunteer_id = ?')
+      .get(req.params.uid, req.params.id);
+    if (!row) return res.status(404).json({ error: 'Unavailability not found.' });
+    db.prepare('DELETE FROM volunteer_unavailability WHERE id = ?').run(row.id);
+    res.status(204).end();
+  });
+
   return router;
+}
+
+function isIsoDate(value) {
+  return typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+function toUnavailabilityApi(row) {
+  return {
+    id: row.id,
+    volunteerId: row.volunteer_id,
+    startsOn: row.starts_on,
+    endsOn: row.ends_on,
+    reason: row.reason,
+  };
 }
 
 function toApi(row) {
