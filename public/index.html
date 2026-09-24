@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Tinshed Players — Crew Roster</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎭</text></svg>" />
+</head>
+<body>
+  <header>
+    <h1>The Tinshed Players <span class="subtitle">Crew Roster</span></h1>
+    <nav id="tabs">
+      <button class="tab active" data-view="roster">Roster</button>
+      <button class="tab" data-view="productions">Productions</button>
+      <button class="tab" data-view="volunteers">Volunteers</button>
+      <button class="tab" data-view="schedule">My Schedule</button>
+    </nav>
+  </header>
+
+  <main>
+    <div id="banner" class="banner hidden"></div>
+
+    <!-- Roster view: pick a production and performance, see the holes -->
+    <section id="view-roster" class="view active">
+      <div class="toolbar">
+        <label>Production
+          <select id="roster-production"></select>
+        </label>
+        <label>Performance
+          <select id="roster-performance"></select>
+        </label>
+        <button id="roster-refresh">Refresh</button>
+      </div>
+      <div id="roster-grid"></div>
+    </section>
+
+    <!-- Productions view: create productions and their performances -->
+    <section id="view-productions" class="view">
+      <form id="production-form" class="card">
+        <h2>New production</h2>
+        <input id="production-title" placeholder="Production title" required />
+        <button type="submit">Create production</button>
+      </form>
+      <div id="production-list"></div>
+    </section>
+
+    <!-- Volunteers view: the company's crew list -->
+    <section id="view-volunteers" class="view">
+      <form id="volunteer-form" class="card">
+        <h2>Add a volunteer</h2>
+        <div class="grid2">
+          <input id="volunteer-name" placeholder="Name *" required />
+          <input id="volunteer-phone" placeholder="Phone" />
+          <input id="volunteer-email" placeholder="Email" />
+          <input id="volunteer-emergency" placeholder="Emergency contact" />
+        </div>
+        <button type="submit">Add volunteer</button>
+        <label class="inline">
+          <input type="checkbox" id="volunteer-show-inactive" /> show inactive
+        </label>
+      </form>
+      <div id="volunteer-list"></div>
+    </section>
+
+    <!-- My Schedule view: what one volunteer is rostered on -->
+    <section id="view-schedule" class="view">
+      <div class="toolbar">
+        <label>Volunteer
+          <select id="schedule-volunteer"></select>
+        </label>
+        <button id="schedule-refresh">Refresh</button>
+      </div>
+      <div id="schedule-list"></div>
+    </section>
+  </main>
+
+  <footer>
+    The Tinshed Players Inc. · Wynnum School of Arts Hall · one role per person, per show.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

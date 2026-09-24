@@ -1,0 +1,142 @@
+/* Tinshed Crew Roster — deliberately simple, as Bec asked: nothing to explain
+   to anybody over sixty. System font stack, big controls, clear states. */
+
+:root {
+  --ink: #26302e;
+  --paper: #f4f4f2;   /* neutral warm-grey page, theatre-red accent */
+  --card: #ffffff;
+  --line: #d8d2c4;
+  --accent: #9c4a2f;   /* theatre-red */
+  --accent-dark: #7c3a24;
+  --ok: #2f6b4f;
+  --warn: #a3541e;
+  --bad: #a03030;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+header {
+  background: var(--ink);
+  color: #f5f1e6;
+  padding: 14px 24px 0;
+}
+
+header h1 { margin: 0 0 10px; font-size: 22px; letter-spacing: 0.3px; }
+header .subtitle { font-weight: normal; font-size: 15px; opacity: 0.75; margin-left: 8px; }
+
+nav { display: flex; gap: 4px; }
+.tab {
+  border: none;
+  border-radius: 6px 6px 0 0;
+  background: #3a4542;
+  color: #e9e4d8;
+  padding: 10px 20px;
+  font-size: 15px;
+  cursor: pointer;
+}
+.tab:hover { background: #46524f; }
+.tab.active { background: var(--paper); color: var(--ink); font-weight: bold; }
+
+main { padding: 20px 24px 40px; max-width: 1000px; margin: 0 auto; }
+
+.view { display: none; }
+.view.active { display: block; }
+
+.toolbar { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; margin-bottom: 16px; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #4c5653; }
+label.inline { flex-direction: row; align-items: center; gap: 6px; font-size: 14px; }
+
+input, select {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: #fff;
+  min-width: 160px;
+}
+button {
+  font: inherit;
+  padding: 9px 16px;
+  border: none;
+  border-radius: 5px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+button:hover { background: var(--accent-dark); }
+button.secondary { background: #5a6562; }
+button.small { padding: 4px 10px; font-size: 13px; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 18px;
+}
+.card h2 { margin: 0 0 12px; font-size: 17px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.card form, .card .grid2 { }
+
+table { width: 100%; border-collapse: collapse; background: var(--card); }
+th, td {
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+th { font-size: 13px; color: #4c5653; text-transform: uppercase; letter-spacing: 0.4px; }
+
+.hole { color: var(--bad); font-weight: bold; }
+.ok { color: var(--ok); font-weight: bold; }
+.gap-badge {
+  display: inline-block;
+  background: #f3e1d8;
+  color: var(--accent-dark);
+  border-radius: 10px;
+  padding: 1px 9px;
+  font-size: 13px;
+  font-weight: bold;
+}
+.unconfirmed { color: var(--warn); font-style: italic; }
+
+.banner {
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-weight: bold;
+}
+.banner.error { background: #f8e3e3; color: var(--bad); border: 1px solid #e0b4b4; }
+.banner.info { background: #e3efe8; color: var(--ok); border: 1px solid #b7d3c3; }
+.hidden { display: none; }
+
+.roster-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; }
+.roster-role { width: 200px; font-weight: bold; }
+.roster-people { flex: 1; }
+.roster-assign {
+  margin-left: auto;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.roster-assign select { min-width: 140px; }
+
+footer {
+  text-align: center;
+  color: #6b746f;
+  font-size: 13px;
+  padding: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.production-card { margin-bottom: 14px; }
+.production-card .perf-line { display: flex; gap: 12px; align-items: center; margin: 6px 0; }
+.perf-line .date { font-weight: bold; min-width: 130px; }
