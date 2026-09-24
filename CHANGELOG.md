@@ -4,6 +4,20 @@ All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and commits follow [Conventional Commits](https://www.conventionalcommits.org/).
 
+## [1.1.1] — 2026-09-24
+
+Handover release: documentation and repository integration only; no
+user-facing changes.
+
+### Changed
+- README clone instructions now point at the published repository, and the
+  branching notes match the delivered workflow (pull request #1; self-review
+  recorded on the pull request).
+- The team repository scaffold (`README`, `.gitignore`, `.env.example` and
+  changelog) is merged into the project line with zero content change, giving
+  the line the shared ancestry needed to contribute the delivered work to the
+  team's shared repository as a pull request.
+
 ## [1.1.0] — 2026-09-24
 
 ### Added
