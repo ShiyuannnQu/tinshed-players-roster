@@ -61,6 +61,19 @@ CREATE TABLE IF NOT EXISTS assignments (
   -- any single performance. Enforced here so no code path can bypass it.
   UNIQUE(performance_id, volunteer_id)
 );
+
+-- Date ranges a volunteer says they cannot be rostered (Bec's "people tell
+-- me on Facebook and it's gone in an hour"). Dates are ISO strings, so the
+-- CHECK constraint is a true date-range sanity check. The assignment routes
+-- refuse a performance whose date falls inside one of these ranges.
+CREATE TABLE IF NOT EXISTS volunteer_unavailability (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  volunteer_id INTEGER NOT NULL REFERENCES volunteers(id) ON DELETE CASCADE,
+  starts_on    TEXT NOT NULL,
+  ends_on      TEXT NOT NULL,
+  reason       TEXT,
+  CHECK (starts_on <= ends_on)
+);
 `;
 
 /**
@@ -99,6 +112,17 @@ function createDb(filePath = config.dbPath) {
   return db;
 }
 
+/** Date ranges a volunteer has recorded as unavailable. */
+function unavailabilityFor(db, volunteerId, date) {
+  return db
+    .prepare(
+      `SELECT * FROM volunteer_unavailability
+       WHERE volunteer_id = ? AND starts_on <= ? AND ends_on >= ?
+       ORDER BY starts_on`
+    )
+    .all(Number(volunteerId), date, date);
+}
+
 /** Is an error a violation of the one-role-per-performance rule? */
 function isOneRoleConflict(err) {
   return (
@@ -110,4 +134,4 @@ function isOneRoleConflict(err) {
   );
 }
 
-module.exports = { createDb, isOneRoleConflict, CALL_TEMPLATES };
+module.exports = { createDb, isOneRoleConflict, unavailabilityFor, CALL_TEMPLATES };

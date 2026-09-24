@@ -22,6 +22,10 @@ volunteer can see what they have been put down for without asking anyone.
 - **The company's operating rule** — a volunteer may hold at most one role in
   any single performance. A second role in the same performance is refused,
   with a reason, and the rule is enforced in the database itself.
+- **Unavailability** — a volunteer can record date ranges they cannot be
+  rostered. An assignment whose performance date falls inside a recorded range
+  is refused with the reason shown (Bec's "people tell me on Facebook and it's
+  gone in an hour").
 - **Roster views** — a performance or production roster shows which positions
   are filled and which are open; a volunteer sees only their own assignments.
 
@@ -51,7 +55,7 @@ start (the `data/` directory is git-ignored).
 ## Run the tests
 
 ```bash
-npm test           # 27 tests with node:test, including the one-role rule
+npm test           # 34 tests with node:test, including the one-role rule
 ```
 
 ## Configuration
