@@ -14,7 +14,7 @@
  */
 
 const express = require('express');
-const { isOneRoleConflict } = require('../db');
+const { isOneRoleConflict, unavailabilityFor } = require('../db');
 
 function assignmentsRouter(db) {
   const router = express.Router();
@@ -41,6 +41,14 @@ function assignmentsRouter(db) {
       return res
         .status(400)
         .json({ error: `"${role}" is not part of the crew call for this performance.` });
+    }
+    const blocked = unavailabilityFor(db, volunteer.id, perf.performance_date);
+    if (blocked.length > 0) {
+      return res.status(409).json({
+        error:
+          `Refused: ${volunteer.name} is unavailable on ${perf.performance_date}` +
+          ` (${blocked[0].reason || 'no reason recorded'}).`,
+      });
     }
 
     try {
@@ -92,6 +100,14 @@ function assignmentsRouter(db) {
     if (!perf) return res.status(404).json({ error: 'Performance not found.' });
     const volunteer = db.prepare('SELECT * FROM volunteers WHERE id = ?').get(vid);
     if (!volunteer) return res.status(404).json({ error: 'Volunteer not found.' });
+    const blocked = unavailabilityFor(db, volunteer.id, perf.performance_date);
+    if (blocked.length > 0) {
+      return res.status(409).json({
+        error:
+          `Refused: ${volunteer.name} is unavailable on ${perf.performance_date}` +
+          ` (${blocked[0].reason || 'no reason recorded'}).`,
+      });
+    }
 
     try {
       db.prepare(
