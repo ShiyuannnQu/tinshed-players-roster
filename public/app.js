@@ -284,16 +284,79 @@ async function refreshVolunteers() {
         refreshVolunteers();
       });
     }
-    tbody.append(el('tr', {},
+    const actions = el('td', {}, deactivateBtn);
+    const row = el('tr', {},
       el('td', { text: v.name }),
       el('td', { text: v.phone }),
       el('td', { text: v.email || '—' }),
       el('td', { text: v.active ? 'active' : 'inactive' }),
-      el('td', {}, deactivateBtn)
-    ));
+      actions
+    );
+    if (v.active) {
+      const unavBtn = el('button', { class: 'small secondary', text: 'Unavailable…' });
+      unavBtn.addEventListener('click', () => toggleUnavailabilityPanel(v, row));
+      actions.prepend(unavBtn);
+    }
+    tbody.append(row);
   }
   table.append(tbody);
   list.append(table);
+}
+
+/* Inline panel per volunteer row: list recorded unavailability and add/remove
+   ranges. The API refuses assignments that clash with these ranges. */
+function toggleUnavailabilityPanel(volunteer, row) {
+  const existing = row.nextElementSibling;
+  if (existing && existing.dataset.panel === String(volunteer.id)) {
+    existing.remove();
+    return;
+  }
+  const panelRow = el('tr', { class: 'unavailability-panel', 'data-panel': String(volunteer.id) });
+  const cell = el('td', { colspan: '5' });
+  panelRow.append(cell);
+
+  const render = async () => {
+    cell.replaceChildren();
+    const res = await api('GET', `/api/volunteers/${volunteer.id}/unavailability`);
+    const list = el('ul', { class: 'unavailability-list' });
+    if (res.body.length === 0) {
+      list.append(el('li', { text: 'No unavailable dates recorded.' }));
+    }
+    for (const u of res.body) {
+      const remove = el('button', { class: 'small secondary', text: 'Remove' });
+      remove.addEventListener('click', async () => {
+        await api('DELETE', `/api/volunteers/${volunteer.id}/unavailability/${u.id}`);
+        render();
+      });
+      list.append(el('li', {},
+        el('span', { text: `${u.startsOn} – ${u.endsOn}${u.reason ? ` · ${u.reason}` : ''}` }),
+        remove
+      ));
+    }
+
+    const starts = el('input', { type: 'date', value: '2026-09-11' });
+    const ends = el('input', { type: 'date', value: '2026-09-13' });
+    const reason = el('input', { type: 'text', placeholder: 'reason (optional)' });
+    const add = el('button', { class: 'small', text: 'Add range' });
+    add.addEventListener('click', async () => {
+      const r = await api('POST', `/api/volunteers/${volunteer.id}/unavailability`, {
+        startsOn: starts.value,
+        endsOn: ends.value,
+        reason: reason.value.trim() || undefined,
+      });
+      if (r.status === 201) render();
+      else banner(r.body?.error || 'Could not record unavailability.');
+    });
+
+    cell.append(
+      el('p', { class: 'panel-title', text: `Unavailable dates — ${volunteer.name}` }),
+      list,
+      el('div', { class: 'perf-line' }, starts, ends, reason, add)
+    );
+  };
+
+  render();
+  row.after(panelRow);
 }
 
 $('#volunteer-show-inactive').addEventListener('change', refreshVolunteers);

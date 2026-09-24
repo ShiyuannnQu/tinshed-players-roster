@@ -4,6 +4,19 @@ All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and commits follow [Conventional Commits](https://www.conventionalcommits.org/).
 
+## [Unreleased]
+
+### Added
+- Volunteer unavailability: volunteers can record date ranges they cannot be
+  rostered, with an optional reason; assigning (or moving) an assignment onto
+  a performance whose date falls inside a recorded range is refused with a
+  409 and the reason. API endpoints under `/api/volunteers/:id/unavailability`,
+  7 new acceptance tests, and an inline panel in the Volunteers view.
+
+### Changed
+- The roster now respects two domain rules instead of one: the
+  one-role-per-performance constraint and recorded unavailability.
+
 ## [1.0.0] — 2026-09-24
 
 First sprint release: the committed scope for the Tinshed Crew Roster.
@@ -35,7 +48,7 @@ First sprint release: the committed scope for the Tinshed Crew Roster.
 - Replacing the volunteer on an assignment now returns the new volunteer's
   name (the updated row was previously fetched without the join).
 
-## [Unreleased]
-- Backlog candidates for the next sprint (see handover notes): skills/operator
-  lists, membership and RSA checks, confirmations and reminders, shift
-  swapping, hours reporting for grant acquittal.
+### Backlog (not committed)
+- Candidates for the next sprint (see handover notes): skills/operator lists,
+  membership and RSA checks, confirmations and reminders, shift swapping,
+  hours reporting for grant acquittal.
