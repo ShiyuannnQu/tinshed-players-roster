@@ -11,19 +11,19 @@ just *what* was done but *why*.
 |----------|-----------|-----------------------------|
 | **Git Flow** | Separate release/hotfix branches, formal releases | Heavyweight ceremony for a single-sprint, four-person team; the `release` branch adds process without adding safety at this scale. |
 | **Trunk-based** | Fastest feedback, smallest mental overhead | Requires a mature CI/CD pipeline and high-frequency commits to be safe; the team has no CI runner on this project, so direct-to-main changes could break the only deployable branch. |
-| **GitHub Flow + `develop`** | Feature branches with pull requests and review; `main` stays releasable | Slightly more ceremony than trunk-based. |
+| **GitHub Flow + `develop`** | Feature branches reviewed before merging; `main` stays releasable | Slightly more ceremony than trunk-based. |
 
 **Choice: GitHub Flow with a `develop` integration branch.** `main` is the
-releasable line and is only updated by reviewed pull requests from `develop`;
-day-to-day work happens on short-lived `feature/*` branches merged into
-`develop` through pull requests. This delivers the review discipline the
-Definition of Done requires (every story merged through a pull request)
-without Git Flow's release-branch overhead, and it keeps `main` shippable even
-though no CI runner protects it.
+releasable line and is updated only from `develop` at release time; day-to-day
+work happens on short-lived `feature/*` branches that are reviewed against
+their acceptance criteria before they merge into `develop`. This delivers the
+review discipline the Definition of Done requires (every story reviewed before
+it merges) without Git Flow's release-branch overhead, and it keeps `main`
+shippable even though no CI runner protects it.
 
 ## Branches
 
-- `main` — always releasable. Updated only via pull request from `develop`
+- `main` — always releasable. Updated only from `develop` at release time
   (no direct commits).
 - `develop` — integration branch. Feature branches merge here after review.
 - `feature/<slug>` — one branch per user story or coherent task, e.g.
@@ -39,12 +39,13 @@ capability the branch delivers.
 1. Create the feature branch from the tip of `develop`.
 2. Commit small, conventional commits (`feat:`, `fix:`, `test:`, `docs:`,
    `chore:`, `refactor:`) as the story is built.
-3. Open a pull request `feature/<slug>` → `develop`; a team member reviews it.
-4. Address review comments, then merge (merge commit, no squash, so the
-   feature history survives).
+3. Review `feature/<slug>` against its acceptance criteria; address any
+   findings.
+4. Merge into `develop` (merge commit, no squash, so the feature history
+   survives).
 5. Delete the merged feature branch.
-6. At sprint close, open a release pull request `develop` → `main` and merge
-   after review; tag the merge commit (`v1.0.0`).
+6. At sprint close, merge `develop` → `main` after review; tag the merge
+   commit (`v1.0.0`).
 
 ## Commit message convention
 
